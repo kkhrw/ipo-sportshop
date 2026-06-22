@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}О магазине{% endblock %}
+
+{% block content %}
+<div class="product-card" style="padding: 40px; max-width: 800px; margin: 0 auto;">
+    <h1 style="text-align: center; color: #667eea; margin-bottom: 30px;">ℹ️ О магазине</h1>
+    
+    <div style="background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+        <h3 style="color: #764ba2; margin-bottom: 15px;">📚 Тема лабораторной работы</h3>
+        <p style="font-size: 18px; color: #5a5a5a; line-height: 1.8;">
+            <strong>Интернет-магазин спортивных товаров</strong> — веб-приложение, 
+            разработанное в рамках лабораторной работы по курсу веб-разработки 
+            с использованием фреймворка Django (Python).
+        </p>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 100%); padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+        <h3 style="color: #2d6a4f; margin-bottom: 15px;"> Цель проекта</h3>
+        <p style="color: #2d6a4f; line-height: 1.8;">
+            Создание полноценного интернет-магазина с каталогом товаров, 
+            системой корзины, фильтрацией и поиском. Проект демонстрирует 
+            работу с моделями Django, представлениями, шаблонами и 
+            системой аутентификации.
+        </p>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #ffd3b6 0%, #ffaaa5 100%); padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+        <h3 style="color: #8b4513; margin-bottom: 15px;">🏪 Основан на магазине</h3>
+        <p style="color: #8b4513; font-size: 16px;">
+            Проект создан по образцу реального интернет-магазина спортивных товаров:
+        </p>
+        <a href="https://www.zonasporta.by/" target="_blank" class="btn" style="margin-top: 15px; background: white; color: #8b4513;">
+            🌐 zonasporta.by
+        </a>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 15px; color: white;">
+        <h3 style="color: white; margin-bottom: 15px;">💻 Технологии</h3>
+        <ul style="list-style: none; line-height: 2;">
+            <li>✨ <strong>Backend:</strong> Django 5.0 (Python)</li>
+            <li>✨ <strong>Frontend:</strong> HTML, CSS (встроенные стили)</li>
+            <li>✨ <strong>Шаблоны:</strong> Django Templates</li>
+        </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'shop:home' %}" class="btn">← На главную</a>
+    </div>
+</div>
+{% endblock %}

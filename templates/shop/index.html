@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - Магазин спортивных товаров{% endblock %}
+
+{% block content %}
+<!-- Hero-секция -->
+<section class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white;">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3" style="color: #f5c6ec; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+            <i></i> Добро пожаловать!
+        </h1>
+        <p class="lead mb-4">В интернет-магазин спортивных товаров и питания</p>
+        <p class="mb-4">Широкий ассортимент товаров для активного образа жизни</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-light btn-lg">
+            <i class="bi bi-bag"></i> Перейти в каталог
+        </a>
+    </div>
+</section>
+
+<!-- Популярные товары -->
+<section class="mb-5">
+    <h2 class="text-center mb-4" style="color: #667eea;">
+        <i class="bi bi-star-fill"></i> Популярные товары
+    </h2>
+    <div class="row g-4">
+        {% for product in popular_products %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                    <i class="bi bi-image" style="font-size: 3rem; color: #ccc;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">{{ product.description|truncatechars:80 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price-tag">{{ product.price }} руб.</span>
+                        <a href="{% url 'shop:product_detail' product.pk %}" class="btn btn-primary btn-sm">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Товары пока не добавлены
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Категории -->
+<section class="mb-5">
+    <h2 class="text-center mb-4" style="color: #764ba2;">
+        <i class="bi bi-grid"></i> Категории товаров
+    </h2>
+    <div class="row g-3">
+        {% for category in categories %}
+        <div class="col-md-4 col-sm-6">
+            <a href="{% url 'shop:product_list' %}?category={{ category.id }}" class="card text-decoration-none h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="color: #667eea;">
+                        <i class="bi bi-tag"></i> {{ category.name }}
+                    </h5>
+                    {% if category.description %}
+                    <p class="card-text text-muted small">{{ category.description|truncatechars:60 }}</p>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Преимущества -->
+<section class="mb-5">
+    <div class="card" style="background: white;">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4" style="color: #764ba2;">
+                <i class="bi bi-award"></i> Почему выбирают нас
+            </h2>
+            <div class="row g-4">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-truck" style="font-size: 3rem; color: #667eea;"></i>
+                    <h5 class="mt-3">Быстрая доставка</h5>
+                    <p class="text-muted small">От 80 рублей — бесплатно</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-check-circle" style="font-size: 3rem; color: #667eea;"></i>
+                    <h5 class="mt-3">Гарантия качества</h5>
+                    <p class="text-muted small">Только проверенные товары</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-credit-card" style="font-size: 3rem; color: #667eea;"></i>
+                    <h5 class="mt-3">Удобная оплата</h5>
+                    <p class="text-muted small">Различные способы оплаты</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-gift" style="font-size: 3rem; color: #667eea;"></i>
+                    <h5 class="mt-3">Подарки клиентам</h5>
+                    <p class="text-muted small">Бонусы постоянным покупателям</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
