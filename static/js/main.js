@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Магазин спортивных товаров загружен!');
+    console.log('Zona Sporta загружен!');
 
     initToasts();
     
@@ -7,11 +7,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (productsContainer) {
         loadProductsFromAPI(productsContainer);
     }
+    
+    // Обновляем счётчик корзины при загрузке
+    if (document.querySelector('.cart-count')) {
+        updateCartCount();
+    }
 });
 
 
 function getCSRFToken() {
-    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Пробуем получить из meta тега
+    const metaToken = document.querySelector('meta[name="csrf-token"]');
+    if (metaToken) return metaToken.getAttribute('content');
+    
+    // Пробуем получить из скрытого поля формы
+    const formToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (formToken) return formToken.value;
+    
+    // Пробуем получить из cookie
+    const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return cookie ? cookie.split('=')[1] : '';
 }
 
 function initToasts() {
@@ -92,11 +107,17 @@ async function loadProductsFromAPI(container) {
                 const productCard = createProductCard(product);
                 container.insertAdjacentHTML('beforeend', productCard);
             });
+        } else if (data.length > 0) {
+            // Если нет results, значит пагинации нет
+            data.forEach(product => {
+                const productCard = createProductCard(product);
+                container.insertAdjacentHTML('beforeend', productCard);
+            });
         } else {
             container.innerHTML = `
                 <div class="col-12">
                     <div class="alert alert-info text-center">
-                        <i class="bi bi-info-circle"></i> Товары не найдены
+                        Товары не найдены
                     </div>
                 </div>
             `;
@@ -106,7 +127,6 @@ async function loadProductsFromAPI(container) {
         container.innerHTML = `
             <div class="col-12">
                 <div class="alert alert-danger text-center">
-                    <i class="bi bi-exclamation-triangle"></i> 
                     Не удалось загрузить товары. Пожалуйста, попробуйте позже.
                 </div>
             </div>
@@ -139,7 +159,7 @@ function createProductCard(product) {
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="price-tag">${product.price} руб.</span>
                         <a href="/catalog/${product.id}/" class="btn btn-primary btn-sm">
-                            <i class="bi bi-eye"></i> Подробнее
+                            Подробнее
                         </a>
                     </div>
                 </div>
@@ -149,13 +169,21 @@ function createProductCard(product) {
 }
 
 
-async function addToCart(productId) {
+// ГЛОБАЛЬНАЯ функция для добавления в корзину
+window.addToCart = async function(productId) {
+    const csrfToken = getCSRFToken();
+    
+    if (!csrfToken) {
+        showNotification('Ошибка безопасности. Обновите страницу.', 'error');
+        return;
+    }
+    
     try {
-        const response = await fetch(`/api/cart-items/`, {
+        const response = await fetch('/api/cart-items/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken(),
+                'X-CSRFToken': csrfToken,
                 'Accept': 'application/json',
             },
             credentials: 'same-origin',
@@ -166,9 +194,7 @@ async function addToCart(productId) {
         });
         
         if (response.ok) {
-            showNotification('✨ Товар успешно добавлен в корзину!', 'success');
-            
-            // Обновляем счётчик корзины (если есть)
+            showNotification('Товар успешно добавлен в корзину!', 'success');
             updateCartCount();
         } else {
             const errorData = await response.json();
@@ -179,7 +205,7 @@ async function addToCart(productId) {
         console.error('Ошибка добавления в корзину:', error);
         showNotification('Ошибка соединения с сервером', 'error');
     }
-}
+};
 
 async function updateCartCount() {
     try {
@@ -193,7 +219,7 @@ async function updateCartCount() {
         
         if (response.ok) {
             const cart = await response.json();
-            const count = cart.items_count || 0;
+            const count = cart.items_count || cart.items?.length || 0;
             
             document.querySelectorAll('.cart-count').forEach(el => {
                 el.textContent = count;
@@ -205,10 +231,12 @@ async function updateCartCount() {
 }
 
 async function apiRequest(url, options = {}) {
+    const csrfToken = getCSRFToken();
+    
     const defaultOptions = {
         headers: {
             'Accept': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
+            'X-CSRFToken': csrfToken,
         },
         credentials: 'same-origin',
     };
