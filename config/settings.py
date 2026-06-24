@@ -90,6 +90,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@zonasporta.com'
 
 CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
     'https://web-production-621a.up.railway.app',
     'https://*.up.railway.app',
 ]
