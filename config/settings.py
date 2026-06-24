@@ -88,3 +88,8 @@ REST_FRAMEWORK = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@zonasporta.com'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-621a.up.railway.app',
+    'https://*.up.railway.app',
+]
