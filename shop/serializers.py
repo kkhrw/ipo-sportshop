@@ -66,6 +66,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ['id', 'cart', 'product', 'product_name', 'product_price', 'quantity', 'item_cost']
+        read_only_fields = ['cart']  # ← Добавьте эту строку!
 
     def get_item_cost(self, obj):
         return str(obj.item_cost())
